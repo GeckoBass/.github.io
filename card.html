@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    html,body,main,aside,h1,h3,h4,input,button,div,ul,ol,li,p,footer,a,header{
+    font-size: 18px;
+    color: #888;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+    }
+    body{
+        width: 100%;
+        height: 100vh;
+        background-image: url(/images/animalbg.png);
+        background-size: cover;
+        overflow: hidden;
+    }
+    img{
+        width: 1;
+        vertical-align: bottom;
+    }
+    header{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        box-shadow: 0 5px 10px #fff;
+    }
+    header div{
+        filter: blur(1px);
+    }
+    h1,h2{
+        padding: .5em;
+    }
+    main{
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        margin: 10px 0;
+    }
+    .card{
+        width: 175px;
+        height: 300px;
+        margin: 2em;
+        transition: all .5s ease;
+        background-size:cover;
+        position: relative;
+        z-index: 10;
+    }
+    main .card .front,main .card .back{
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: all .5s ease;
+    }
+    main .card .back{
+        background-image: url(/images/23997168.png);
+    }
+    aside{
+        width: 100%;
+        height: 50vh;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background-color: #333;
+        border-radius: 20px 20px 0 0;
+        color: #ccc;
+        padding: 1.5em;
+        transform: translateY(50vh);
+        transition: all .5s ease;
+        z-index: 10;
+    }
+    main .after{
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-color: #00000077;
+        z-index: 1;
+        opacity: 0;
+        transition: all .5s linear;
+    }
+
+    /* main .card .front{
+        transform: perspective(800px);
+        background-image: url(/images/00.jpg);
+    } */
+    /* main .card .back{
+        transform: perspective(800px);
+        background-image: url(/images/00.png);
+    }
+    .card:hover{
+        transform: rotateY(180deg);
+    }
+    .card:hover .back{
+        backface-visibility: hidden;
+        transform: rotateY(180deg);
+    }
+    .card:hover .front{
+        transform: rotateY(180deg);
+    } */
+</style>
+<body>
+    <header>
+        <h1>塔羅牌</h1>
+        <h1>請先默念您的問題</h1>
+        <div></div>
+    </header>
+    <main>
+        <div class="after"></div>
+        <div class="card">
+            <div class="front"></div>
+            <div class="back"></div>
+        </div>
+        <div class="card">
+            <div class="front"></div>
+            <div class="back"></div>
+        </div>
+        <div class="card">
+            <div class="front"></div>
+            <div class="back"></div>
+        </div>
+    </main>
+    <aside>
+    </aside>
+    <footer>
+        &copy;
+    </footer>
+</body>
+</html>
+<script src="/js/tarot.js"></script>
+<script>
+    let cardNum=[];
+    let x=[];
+    cpu();
+    function cpu() {
+        cardNum=[Math.round(Math.random()*21),Math.round(Math.random()*21),Math.round(Math.random()*21)];
+        x=[Math.round(Math.random()),Math.round(Math.random()),Math.round(Math.random())];
+        if (cardNum[0]==cardNum[1] || cardNum[0]==cardNum[2] || cardNum[1]==cardNum[2]) {
+            cpu();
+        }
+        let txt=[];
+        let front=document.querySelectorAll('.front');
+        let aside=document.querySelector('aside');
+        for (let i = 0; i < 3; i++) {
+            if (x[i]==1) {
+                front[i].style.backgroundImage=`url(${data[cardNum[i]].page})`;
+                front[i].style.transform=`rotate(180deg)`;
+            }else{
+                front[i].style.backgroundImage=`url(${data[cardNum[i]].page})`;
+
+            }
+            txt[i] = data[cardNum[i]];
+        }
+
+        let after=document.querySelector('.after');
+        let back=document.querySelectorAll('.back');
+        aside.addEventListener('click',function () {
+            this.style.transform='translateY(50vh)';
+            after.style.opacity= '0';
+        })
+        for (const b of back) {
+            b.addEventListener('click',function () {
+                aside.style.transform='translateY(0vh)';
+                after.style.opacity= '1';
+                this.parentElement.style.transition='all .5s ease';
+                this.style.transition='all .5s ease';
+                this.style.backfaceVisibility= 'hidden';
+                this.style.transform='rotateY(180deg)';
+                this.parentElement.style.transform='rotateY(180deg)';
+            })
+        }
+        let card = document.getElementsByClassName("card");
+        card[0].addEventListener("click",function(){
+            aside.style.transform = "translateY(0vh)";
+            aside.innerHTML =`<h3> ${txt[0].name}</h3> <br> ${txt[0].past[x[0]]}`;
+        })
+        card[1].addEventListener("click",function(){
+            aside.style.transform = "translateY(0vh)";
+            aside.innerHTML = ` <h3>${txt[1].name}</h3> <br> ${txt[1].present[x[1]]}`;
+        })
+        card[2].addEventListener("click",function(){
+            aside.style.transform = "translateY(0vh)";
+            aside.innerHTML = ` <h3>${txt[2].name}</h3> <br> ${txt[2].future[x[2]]}`;
+        })
+    }
+</script>
